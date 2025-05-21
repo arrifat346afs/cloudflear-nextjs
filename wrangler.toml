@@ -25,35 +25,6 @@ script_name = "nextjs-starter"
 tag = "v1"
 new_classes = ["Cache", "ImageOptimizer"]
 
-# Configure environment variables if needed
-[vars]
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY = "pk_test_ZWxlZ2FudC1qYXliaXJkLTc0LmNsZXJrLmFjY291bnRzLmRldiQ"
-CLERK_SECRET_KEY = "sk_test_zHoRbFgAXPRqvOyqsATSnsp4JEs9rMOxa3D0ueRYrh"
-NEXT_PUBLIC_CLERK_SIGN_IN_URL = "/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL = "/sign-up"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL = "/"
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL = "/"
-
-# Convex
-NEXT_PUBLIC_CONVEX_URL = "https://oceanic-lapwing-713.convex.cloud"
-CONVEX_DEPLOYMENT = "dev:oceanic-lapwing-713"
-CONVEX_ADMIN_KEY = ""
-
-# Polar.sh
-POLAR_WEBHOOK_SECRET = "f0f007fc8f4c43989f57b9244c3b1b3b"
-POLAR_ACCESS_TOKEN = "polar_oat_VH6IUOYVK4GYD3zKF3DwRSWgzQt22FwV853YX4cCgJK"
-# Add your organization ID here to filter products
-POLAR_ORGANIZATION_ID = "0f276e66-0174-46f3-a129-205cc64193be"
-# Frontend
-# This will be automatically set to your Cloudflare Workers domain after deployment
-NEXT_PUBLIC_BASE_URL = "https://nextjs-starter.workers.dev"
-
-# Desktop API Key (use a strong random value)
-DESKTOP_API_KEY = "8f9a3b7c1e6d2f4a5g8h9i0j1k2l3m4n"
-
 # Configure site if you're using static assets
 [site]
 bucket = "./.open-next/assets"
-
-# Remove Pages configuration as we're using Workers deployment
-# pages_build_output_dir = "out"

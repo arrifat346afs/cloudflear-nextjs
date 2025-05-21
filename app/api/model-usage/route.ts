@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 export const runtime = 'nodejs';
-
 // Define types
 interface ModelUsageData {
   modelName: string;
@@ -10,8 +9,26 @@ interface ModelUsageData {
   timestamp?: number;
 }
 
-// Create a Convex client for API routes
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || "");
+// Create a Convex client for API routes - initialize lazily to prevent build errors
+let convexClient: ConvexHttpClient | null = null;
+
+function getConvexClient() {
+  if (convexClient) return convexClient;
+  
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+  if (!convexUrl) {
+    console.warn('NEXT_PUBLIC_CONVEX_URL is not defined. Convex functionality will not work.');
+    return null;
+  }
+  
+  try {
+    convexClient = new ConvexHttpClient(convexUrl);
+    return convexClient;
+  } catch (error) {
+    console.error('Failed to initialize Convex client:', error);
+    return null;
+  }
+}
 
 // Helper function to add CORS headers
 function corsHeaders() {
@@ -46,6 +63,18 @@ export async function GET(request: NextRequest) {
       `Request headers:`,
       Object.fromEntries(request.headers.entries())
     );
+    
+    // Get the Convex client
+    const convexClient = getConvexClient();
+    if (!convexClient) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Convex client not initialized. Check NEXT_PUBLIC_CONVEX_URL environment variable."
+        },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
 
     let result;
 
@@ -56,7 +85,7 @@ export async function GET(request: NextRequest) {
       );
 
       try {
-        result = await convex.query(api.modelUsage.getUserModelUsageData, {
+        result = await convexClient.query(api.modelUsage.getUserModelUsageData, {
           userId: userId,
         });
 
@@ -186,7 +215,7 @@ export async function GET(request: NextRequest) {
     } else {
       // Otherwise, get all data
       console.log("Querying Convex for all model usage data");
-      result = await convex.query(api.modelUsage.getModelUsageData);
+      result = await convexClient.query(api.modelUsage.getModelUsageData);
     }
 
     // Log a sample of the data being returned
@@ -305,6 +334,7 @@ export async function POST(request: NextRequest) {
     else if (Array.isArray(body)) {
       // Process each item in the array
       const results = [];
+      const errors = [];
       let hasErrors = false;
 
       for (const item of body) {
@@ -325,8 +355,19 @@ export async function POST(request: NextRequest) {
             continue;
           }
 
+          // Get the Convex client
+          const convexClient = getConvexClient();
+          if (!convexClient) {
+            errors.push({
+              item,
+              error: "Convex client not initialized. Check NEXT_PUBLIC_CONVEX_URL environment variable."
+            });
+            hasErrors = true;
+            continue;
+          }
+          
           // Add data to Convex
-          const result = await convex.mutation(
+          const result = await convexClient.mutation(
             api.modelUsage.addModelUsageData,
             {
               modelName: itemModelName,
@@ -427,8 +468,20 @@ export async function POST(request: NextRequest) {
     });
 
     try {
+      // Get the Convex client
+      const convexClient = getConvexClient();
+      if (!convexClient) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Convex client not initialized. Check NEXT_PUBLIC_CONVEX_URL environment variable."
+          },
+          { status: 500, headers: corsHeaders() }
+        );
+      }
+      
       // Add data to Convex
-      const result = await convex.mutation(api.modelUsage.addModelUsageData, {
+      const result = await convexClient.mutation(api.modelUsage.addModelUsageData, {
         modelName,
         imageCount,
         userId,
@@ -492,8 +545,20 @@ export async function POST(request: NextRequest) {
  */
 export async function DELETE() {
   try {
+    // Get the Convex client
+    const convexClient = getConvexClient();
+    if (!convexClient) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Convex client not initialized. Check NEXT_PUBLIC_CONVEX_URL environment variable."
+        },
+        { status: 500, headers: corsHeaders() }
+      );
+    }
+    
     // Clear data from Convex
-    const result = await convex.mutation(api.modelUsage.clearModelUsageData);
+    const result = await convexClient.mutation(api.modelUsage.clearModelUsageData);
 
     return NextResponse.json(
       {

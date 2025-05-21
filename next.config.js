@@ -44,8 +44,8 @@ const nextConfig = {
     reactCompiler: true,
   },
   pageExtensions: ["ts", "tsx", "mdx"],
-  // Use standalone output for Cloudflare Workers
-  output: 'standalone',
+  // Use static export for Cloudflare Pages
+  output: 'export',
   // Configure webpack to optimize bundle size
   webpack: (config, { dev, isServer }) => {
     // Split chunks more aggressively to stay under Cloudflare's 25MB limit

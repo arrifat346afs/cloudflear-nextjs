@@ -4,19 +4,25 @@ const nextConfig = {
   experimental: {
     serverActions: true,
   },
+  env: {
+    POLAR_ACCESS_TOKEN: process.env.POLAR_ACCESS_TOKEN || '',
+    POLAR_ORGANIZATION_ID: process.env.POLAR_ORGANIZATION_ID || '',
+    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL || '',
+  },
   // Add specific configuration for static exports
   images: {
     unoptimized: true,
   },
-  // Configure Cloudflare specific options
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
+  // Handle API routes
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/api/:path*',
+          destination: '/api/:path*',
+        },
+      ],
     }
-    return config;
   },
 }
 

@@ -21,28 +21,36 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      # Create .env.production file
+      # Create comprehensive environment file
       - name: Create environment file
         run: |
-          echo "NEXT_PUBLIC_CONVEX_URL=${{ secrets.NEXT_PUBLIC_CONVEX_URL }}" > .env.production
-          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> .env.production
-          # Add other environment variables
+          cat << EOF > .env.production
+          # Convex
+          NEXT_PUBLIC_CONVEX_URL=${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
+          CONVEX_DEPLOYMENT=${{ secrets.CONVEX_DEPLOYMENT }}
+
+          # Clerk
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+          NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+
+          # Polar
+          POLAR_WEBHOOK_SECRET=${{ secrets.POLAR_WEBHOOK_SECRET }}
+          POLAR_ACCESS_TOKEN=${{ secrets.POLAR_ACCESS_TOKEN }}
+          POLAR_ORGANIZATION_ID=${{ secrets.POLAR_ORGANIZATION_ID }}
+
+          # API Key
+          DESKTOP_API_KEY=${{ secrets.DESKTOP_API_KEY }}
+          EOF
 
       - name: Build with OpenNext
         run: bun run build:open-next
         env:
-          NEXT_PUBLIC_CONVEX_URL: ${{ secrets.NEXT_PUBLIC_CONVEX_URL }}
-          CONVEX_DEPLOYMENT: ${{ secrets.CONVEX_DEPLOYMENT }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-          NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
-          NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
-          NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /
-          NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /
-          POLAR_WEBHOOK_SECRET: ${{ secrets.POLAR_WEBHOOK_SECRET }}
-          POLAR_ACCESS_TOKEN: ${{ secrets.POLAR_ACCESS_TOKEN }}
-          POLAR_ORGANIZATION_ID: ${{ secrets.POLAR_ORGANIZATION_ID }}
-          DESKTOP_API_KEY: ${{ secrets.DESKTOP_API_KEY }}
+          # Environment variables are now loaded from .env.production
+          NODE_ENV: production
 
       - name: Deploy to Cloudflare Workers
         run: bunx wrangler deploy

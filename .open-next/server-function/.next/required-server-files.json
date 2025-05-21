@@ -1,7 +1,12 @@
 {
   "version": 1,
   "config": {
-    "env": {},
+    "env": {
+      "POLAR_ACCESS_TOKEN": "polar_oat_VH6IUOYVK4GYD3zKF3DwRSWgzQt22FwV853YX4cCgJK",
+      "POLAR_ORGANIZATION_ID": "0f276e66-0174-46f3-a129-205cc64193be",
+      "NEXT_PUBLIC_CONVEX_URL": ""
+    },
+    "webpack": null,
     "eslint": {
       "ignoreDuringBuilds": false
     },
@@ -17,9 +22,10 @@
     "useFileSystemPublicRoutes": true,
     "generateEtags": true,
     "pageExtensions": [
-      "ts",
       "tsx",
-      "mdx"
+      "ts",
+      "jsx",
+      "js"
     ],
     "poweredByHeader": true,
     "compress": true,
@@ -44,9 +50,9 @@
         256,
         384
       ],
-      "path": "/_next/image/",
-      "loader": "custom",
-      "loaderFile": "D:\\Coding\\polar\\nextjs14-starter-template\\image-loader.js",
+      "path": "/_next/image",
+      "loader": "default",
+      "loaderFile": "",
       "domains": [],
       "disableStaticImages": false,
       "minimumCacheTTL": 60,
@@ -56,39 +62,8 @@
       "dangerouslyAllowSVG": false,
       "contentSecurityPolicy": "script-src 'none'; frame-src 'none'; sandbox;",
       "contentDispositionType": "attachment",
-      "remotePatterns": [
-        {
-          "protocol": "https",
-          "hostname": "images.unsplash.com",
-          "port": "",
-          "pathname": "/**"
-        },
-        {
-          "protocol": "https",
-          "hostname": "seo-heist.s3.amazonaws.com",
-          "port": "",
-          "pathname": "/**"
-        },
-        {
-          "protocol": "https",
-          "hostname": "dwdwn8b5ye.ufs.sh",
-          "port": "",
-          "pathname": "/**"
-        },
-        {
-          "protocol": "https",
-          "hostname": "ansubkhan.com",
-          "port": "",
-          "pathname": "/**"
-        },
-        {
-          "protocol": "https",
-          "hostname": "utfs.io",
-          "port": "",
-          "pathname": "/**"
-        }
-      ],
-      "unoptimized": false
+      "remotePatterns": [],
+      "unoptimized": true
     },
     "devIndicators": {
       "position": "bottom-left"
@@ -220,13 +195,13 @@
         "dynamic": 0,
         "static": 300
       },
-      "reactCompiler": true,
       "serverComponentsHmrCache": true,
       "staticGenerationMaxConcurrency": 8,
       "staticGenerationMinPagesPerWorker": 25,
       "dynamicIO": false,
       "inlineCss": false,
       "useCache": false,
+      "serverActions": true,
       "optimizePackageImports": [
         "lucide-react",
         "date-fns",
@@ -309,7 +284,17 @@
     },
     "htmlLimitedBots": "Mediapartners-Google|Slurp|DuckDuckBot|baiduspider|yandex|sogou|bitlybot|tumblr|vkShare|quora link preview|redditbot|ia_archiver|Bingbot|BingPreview|applebot|facebookexternalhit|facebookcatalog|Twitterbot|LinkedInBot|Slackbot|Discordbot|WhatsApp|SkypeUriPreview",
     "bundlePagesRouterDependencies": false,
-    "configFileName": "next.config.js"
+    "configFileName": "next.config.js",
+    "_originalRewrites": {
+      "beforeFiles": [
+        {
+          "source": "/api/:path*",
+          "destination": "/api/:path*"
+        }
+      ],
+      "afterFiles": [],
+      "fallback": []
+    }
   },
   "appDir": "D:\\Coding\\polar\\nextjs14-starter-template",
   "relativeAppDir": "",

@@ -4,7 +4,11 @@ import { api } from "@/convex/_generated/api";
 export const runtime = 'nodejs';
 
 // Create a Convex client for API routes
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || "");
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+if (!convexUrl) {
+  console.warn("NEXT_PUBLIC_CONVEX_URL is not defined. Convex functionality will not work.");
+}
+const convex = convexUrl ? new ConvexHttpClient(convexUrl) : null;
 
 // Helper function to add CORS headers
 function corsHeaders() {
@@ -76,6 +80,20 @@ export async function GET(request: NextRequest) {
     }
 
     try {
+      // Check if Convex client is available
+      if (!convex) {
+        return NextResponse.json(
+          {
+            error: "configuration_error",
+            message: "Convex client is not configured properly",
+          },
+          {
+            status: 500,
+            headers: corsHeaders(),
+          }
+        );
+      }
+
       // Find user by email in the database
       const users = await convex.query(api.users.getAllUsers);
       const user = users.find((u: any) => u.email === email);

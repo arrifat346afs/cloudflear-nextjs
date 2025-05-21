@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "build:open-next": "NEXT_PUBLIC_CONVEX_URL=$NEXT_PUBLIC_CONVEX_URL open-next build",
-    "deploy": "next build && wrangler pages deploy out --project-name nextjs-starter"
+    "deploy": "next build && wrangler pages deploy out --project-name nextjs-starter-high"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.1.2",
@@ -76,7 +76,7 @@
     "lucide-react": "^0.511.0",
     "mini-svg-data-uri": "^1.4.4",
     "motion": "^12.12.1",
-    "next": "latest",
+    "next": "14.2.5",
     "next-themes": "^0.3.0",
     "next-view-transitions": "^0.3.4",
     "react": "18.3.1",
